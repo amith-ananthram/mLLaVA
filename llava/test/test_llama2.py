@@ -21,7 +21,7 @@ class DummyProcessor:
         }
 
 
-class TestBaichuan(unittest.TestCase):
+class TestLlama2(unittest.TestCase):
 
     # https://github.com/meta-llama/llama/blob/main/llama/generation.py#L343
     #   f"{B_INST} {(prompt['content']).strip()} {E_INST} {(answer['content']).strip()} "
