@@ -314,6 +314,17 @@ conv_baichuan_2_chat = Conversation(
     sep2="</s>"
 )
 
+conv_llama_2_chat = Conversation(
+    system="",
+    roles=("USER", "ASSISTANT"),
+    version="llama_v2",
+    messages=(),
+    offset=0,
+    sep_style=SeparatorStyle.LLAMA_2,
+    sep="<s>",
+    sep2="</s>",
+)
+
 conv_llava_plain = Conversation(
     system="",
     roles=("", ""),
@@ -395,27 +406,30 @@ Answer the questions.""",
     sep="<|im_end|>",
 )
 
-default_conversation = conv_vicuna_v1
+# commenting out all of this as it we don't want subtle
+# input errors to leak into our training
+default_conversation = None
 conv_templates = {
-    "default": conv_vicuna_v0,
-    "v0": conv_vicuna_v0,
-    "v1": conv_vicuna_v1,
-    "vicuna_v1": conv_vicuna_v1,
-    "llama_2": conv_llama_2,
+    # "default": conv_vicuna_v0,
+    # "v0": conv_vicuna_v0,
+    # "v1": conv_vicuna_v1,
+    # "vicuna_v1": conv_vicuna_v1,
+    # "llama_2": conv_llama_2,
     "baichuan_2_chat": conv_baichuan_2_chat,
-    "mistral_instruct": conv_mistral_instruct,
-    "chatml_direct": conv_chatml_direct,
-    "mistral_direct": conv_chatml_direct,
-
-    "plain": conv_llava_plain,
-    "v0_plain": conv_llava_plain,
-    "llava_v0": conv_llava_v0,
-    "v0_mmtag": conv_llava_v0_mmtag,
-    "llava_v1": conv_llava_v1,
-    "v1_mmtag": conv_llava_v1_mmtag,
-    "llava_llama_2": conv_llava_llama_2,
-
-    "mpt": conv_mpt,
+    "llama_2_chat": conv_llama_2_chat,
+    # "mistral_instruct": conv_mistral_instruct,
+    # "chatml_direct": conv_chatml_direct,
+    # "mistral_direct": conv_chatml_direct,
+    #
+    # "plain": conv_llava_plain,
+    # "v0_plain": conv_llava_plain,
+    # "llava_v0": conv_llava_v0,
+    # "v0_mmtag": conv_llava_v0_mmtag,
+    # "llava_v1": conv_llava_v1,
+    # "v1_mmtag": conv_llava_v1_mmtag,
+    # "llava_llama_2": conv_llava_llama_2,
+    #
+    # "mpt": conv_mpt,
 }
 
 

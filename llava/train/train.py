@@ -900,6 +900,7 @@ def train(attn_implementation=None):
                 **bnb_model_from_pretrained_args
             )
         else:
+            assert model_args.version in {'llama_2_chat'}
             model = LlavaLlamaForCausalLM.from_pretrained(
                 model_args.model_name_or_path,
                 cache_dir=training_args.cache_dir,
@@ -988,6 +989,7 @@ def train(attn_implementation=None):
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             assert 'baichuan' not in model_args.model_name_or_path.lower()
+            assert 'llama-2-7b-chat' not in model_args.model_name_or_path.lower()
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
 
     if model_args.vision_tower is not None:
