@@ -24,11 +24,11 @@ from llava.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, D
 from llava.model.language_model.baichuan import BaichuanTokenizer
 
 
-def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, load_4bit=False, device_map="auto", device="cuda", use_flash_attn=False, **kwargs):
-    kwargs = {"device_map": device_map, **kwargs}
-
-    if device != "cuda":
-        kwargs['device_map'] = {"": device}
+def load_pretrained_model(
+    model_path, model_base, model_name, load_8bit=False, load_4bit=False,
+    device_map="auto", device="cuda", use_flash_attn=False
+):
+    kwargs = {"device": device}
 
     if load_8bit:
         kwargs['load_in_8bit'] = True
@@ -46,16 +46,41 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
     if use_flash_attn:
         kwargs['attn_implementation'] = 'flash_attention_2'
 
-    if 'llava' in model_name.lower():
+    if 'llava' in model_name.lower() or 'baichuan' in model_name.lower():
         # Load LLaVA model
-        if 'lora' in model_name.lower() and model_base is None:
+        if 'lora' in model_path.lower() and model_base is None:
             warnings.warn('There is `lora` in model name but no `model_base` is provided. If you are loading a LoRA model, please provide the `model_base` argument. Detailed instruction: https://github.com/haotian-liu/LLaVA#launch-a-model-worker-lora-weights-unmerged.')
-        if 'lora' in model_name.lower() and model_base is not None:
-            from llava.model.language_model.llava_llama import LlavaConfig
-            lora_cfg_pretrained = LlavaConfig.from_pretrained(model_path)
-            tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False)
+
+        if 'lora' in model_path.lower() and model_base is not None:
+
             print('Loading LLaVA from base model...')
-            model = LlavaLlamaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs)
+
+            if 'baichuan' in model_base:
+                from llava.model.language_model.llava_baichuan import LlavaBaichuanConfig
+
+                lora_cfg_pretrained = LlavaBaichuanConfig.from_pretrained(
+                    model_path
+                )
+                tokenizer = BaichuanTokenizer.from_pretrained(model_base)
+                model = LlavaBaichuanForCausalLM.from_pretrained(
+                    model_base,
+                    low_cpu_mem_usage=True,
+                    config = lora_cfg_pretrained,
+                    **kwargs
+                )
+            else:
+                from llava.model.language_model.llava_llama import LlavaConfig
+
+                lora_cfg_pretrained = LlavaConfig.from_pretrained(
+                    model_path
+                )
+                tokenizer = AutoTokenizer.from_pretrained(
+                    model_base, use_fast=False
+                )
+                model = LlavaLlamaForCausalLM.from_pretrained(
+                    model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs
+                )
+
             token_num, tokem_dim = model.lm_head.out_features, model.lm_head.in_features
             if model.lm_head.weight.shape[0] != token_num:
                 model.lm_head.weight = torch.nn.Parameter(torch.empty(token_num, tokem_dim, device=model.device, dtype=model.dtype))
@@ -74,6 +99,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                         subfolder=subfolder)
                     return torch.load(cache_file, map_location='cpu')
                 non_lora_trainables = load_from_hf(model_path, 'non_lora_trainables.bin')
+
             non_lora_trainables = {(k[11:] if k.startswith('base_model.') else k): v for k, v in non_lora_trainables.items()}
             if any(k.startswith('model.model.') for k in non_lora_trainables):
                 non_lora_trainables = {(k[6:] if k.startswith('model.') else k): v for k, v in non_lora_trainables.items()}

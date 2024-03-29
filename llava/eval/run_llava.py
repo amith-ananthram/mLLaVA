@@ -48,12 +48,18 @@ def load_images(image_files):
 
 
 def eval_model(args):
+    if args.device == 'cpu':
+        device = torch.device('cpu')
+    else:
+        assert torch.cuda.is_available(), "CUDA is not available"
+        device = torch.device('cuda', int(args.device))
+
     # Model
     disable_torch_init()
 
     model_name = get_model_name_from_path(args.model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
-        args.model_path, args.model_base, model_name
+        args.model_path, args.model_base, model_name, device=device
     )
 
     qs = args.query
@@ -142,6 +148,7 @@ if __name__ == "__main__":
     parser.add_argument("--top_p", type=float, default=None)
     parser.add_argument("--num_beams", type=int, default=1)
     parser.add_argument("--max_new_tokens", type=int, default=512)
+    parser.add_argument("--device", type=str, default="cpu")
     args = parser.parse_args()
 
     eval_model(args)
