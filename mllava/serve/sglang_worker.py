@@ -16,11 +16,11 @@ import re
 import uvicorn
 from functools import partial
 
-from llava.constants import WORKER_HEART_BEAT_INTERVAL
-from llava.utils import (build_logger, server_error_msg,
+from mllava.constants import WORKER_HEART_BEAT_INTERVAL
+from mllava.utils import (build_logger, server_error_msg,
     pretty_print_semaphore)
-from llava.mm_utils import process_images, load_image_from_base64, tokenizer_image_token, expand2square
-from llava.constants import DEFAULT_IMAGE_TOKEN
+from mllava.mm_utils import process_images, load_image_from_base64, tokenizer_image_token, expand2square
+from mllava.constants import DEFAULT_IMAGE_TOKEN
 
 import sglang as sgl
 from sglang.backend.runtime_endpoint import RuntimeEndpoint

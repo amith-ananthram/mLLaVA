@@ -9,10 +9,7 @@ output_dir=$5    # ./checkpoints/llava-v1.5-13b-pretrain
 # this script assumes you're running with 4 40GB A100 GPUs
 # (pre-training should take < 16 hours as it took ~3.5 w/ 8 80GB A100s)
 
-# TODO: specify and support a new version for LM specific conversation
-# styling and system messages (needs to be implemented in conversation.py)
-
-deepspeed llava/train/train.py \
+deepspeed mllava/train/train.py \
     --deepspeed ./scripts/zero2.json \
     --model_name_or_path $lm \
     --version $version \
