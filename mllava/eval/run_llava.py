@@ -1,17 +1,17 @@
 import argparse
 import torch
 
-from llava.constants import (
+from mllava.constants import (
     IMAGE_TOKEN_INDEX,
     DEFAULT_IMAGE_TOKEN,
     DEFAULT_IM_START_TOKEN,
     DEFAULT_IM_END_TOKEN,
     IMAGE_PLACEHOLDER,
 )
-from llava.conversation import conv_templates, SeparatorStyle
-from llava.model.builder import load_pretrained_model
-from llava.utils import disable_torch_init
-from llava.mm_utils import (
+from mllava.conversation import conv_templates, SeparatorStyle
+from mllava.model.builder import load_pretrained_model
+from mllava.utils import disable_torch_init
+from mllava.mm_utils import (
     process_images,
     tokenizer_image_token,
     get_model_name_from_path,
@@ -75,9 +75,9 @@ def eval_model(args):
         else:
             qs = DEFAULT_IMAGE_TOKEN + "\n" + qs
 
-    if "llama-2" in model_name.lower():
-        conv_mode = "llava_llama_2"
-    elif "mistral" in model_name.lower():
+    # if "llama-2" in model_name.lower():
+    #     conv_mode = "llava_llama_2"
+    if "mistral" in model_name.lower():
         conv_mode = "mistral_instruct"
     elif "v1.6-34b" in model_name.lower():
         conv_mode = "chatml_direct"
@@ -87,6 +87,8 @@ def eval_model(args):
         conv_mode = "mpt"
     elif "baichuan" in model_name.lower():
         conv_mode = "baichuan_2_chat"
+    elif "llama" in model_name.lower():
+        conv_mode = "llama_2_chat"
     else:
         conv_mode = "llava_v0"
 

@@ -3,9 +3,9 @@ import unittest
 import torch
 from transformers import AutoTokenizer
 
-from llava import conversation as conversation_lib
-from llava.constants import DEFAULT_IMAGE_PATCH_TOKEN
-from llava.train.train import DataArguments, LazySupervisedDataset
+from mllava import conversation as conversation_lib
+from mllava.constants import DEFAULT_IMAGE_PATCH_TOKEN
+from mllava.train.train import DataArguments, LazySupervisedDataset
 
 
 class DummyProcessor:
@@ -40,8 +40,8 @@ class TestLlama2(unittest.TestCase):
 
         args = DataArguments(
             is_multimodal=True,
-            data_path='llava/test/fixtures/en_pretrain_sample.json',
-            image_folder='llava/test/fixtures/sampled_images'
+            data_path='mllava/test/fixtures/en_pretrain_sample.json',
+            image_folder='mllava/test/fixtures/sampled_images'
         )
         args.mm_use_im_start_end = False
         args.image_processor = DummyProcessor()

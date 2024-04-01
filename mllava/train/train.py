@@ -27,14 +27,14 @@ import torch
 import transformers
 import tokenizers
 
-from llava.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from mllava.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from torch.utils.data import Dataset
-from llava.train.llava_trainer import LLaVATrainer
+from mllava.train.llava_trainer import LLaVATrainer
 
-from llava import conversation as conversation_lib
-from llava.model import *
-from llava.mm_utils import tokenizer_image_token
-from llava.model.language_model.baichuan import BaichuanTokenizer
+from mllava import conversation as conversation_lib
+from mllava.model import *
+from mllava.mm_utils import tokenizer_image_token
+from mllava.model.language_model.baichuan import BaichuanTokenizer
 
 from PIL import Image
 

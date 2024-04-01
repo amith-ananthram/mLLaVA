@@ -19,9 +19,9 @@ import shutil
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAndBytesConfig
 import torch
-from llava.model import *
-from llava.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
-from llava.model.language_model.baichuan import BaichuanTokenizer
+from mllava.model import *
+from mllava.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from mllava.model.language_model.baichuan import BaichuanTokenizer
 
 
 def load_pretrained_model(
@@ -56,7 +56,7 @@ def load_pretrained_model(
             print('Loading LLaVA from base model...')
 
             if 'baichuan' in model_base:
-                from llava.model.language_model.llava_baichuan import LlavaBaichuanConfig
+                from mllava.model.language_model.llava_baichuan import LlavaBaichuanConfig
 
                 lora_cfg_pretrained = LlavaBaichuanConfig.from_pretrained(
                     model_path
@@ -69,7 +69,7 @@ def load_pretrained_model(
                     **kwargs
                 )
             else:
-                from llava.model.language_model.llava_llama import LlavaConfig
+                from mllava.model.language_model.llava_llama import LlavaConfig
 
                 lora_cfg_pretrained = LlavaConfig.from_pretrained(
                     model_path
@@ -78,7 +78,8 @@ def load_pretrained_model(
                     model_base, use_fast=False
                 )
                 model = LlavaLlamaForCausalLM.from_pretrained(
-                    model_base, low_cpu_mem_usage=True, config=lora_cfg_pretrained, **kwargs
+                    model_base, low_cpu_mem_usage=True,
+                    config=lora_cfg_pretrained, **kwargs
                 )
 
             token_num, tokem_dim = model.lm_head.out_features, model.lm_head.in_features
@@ -177,7 +178,7 @@ def load_pretrained_model(
 
     image_processor = None
 
-    if 'llava' in model_name.lower() or 'baichuan' in model_name.lower():
+    if 'llava' in model_name.lower() or 'baichuan' in model_name.lower() or 'llama' in model_name.lower():
         mm_use_im_start_end = getattr(model.config, "mm_use_im_start_end", False)
         mm_use_im_patch_token = getattr(model.config, "mm_use_im_patch_token", True)
         if mm_use_im_patch_token:

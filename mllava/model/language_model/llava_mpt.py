@@ -19,7 +19,7 @@ import torch
 
 from transformers import AutoConfig, AutoModelForCausalLM, \
                          MptConfig, MptForCausalLM, MptModel
-from llava.model.llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
+from mllava.model.llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
 
 
 class LlavaMptConfig(MptConfig):
@@ -32,7 +32,7 @@ class LlavaMptModel(LlavaMetaModel, MptModel):
     def __init__(self, config: MptConfig):
         config.hidden_size = config.d_model
         super(LlavaMptModel, self).__init__(config)
-    
+
     def embed_tokens(self, x):
         return self.wte(x)
 
@@ -71,7 +71,7 @@ class LlavaMptForCausalLM(MptForCausalLM, LlavaMetaForCausalLM):
         images=None):
 
         input_ids, attention_mask, past_key_values, inputs_embeds, labels = self.prepare_inputs_labels_for_multimodal(input_ids, attention_mask, past_key_values, labels, images)
-        
+
         return super().forward(
             input_ids,
             past_key_values=past_key_values,
