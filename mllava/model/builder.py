@@ -26,7 +26,7 @@ from mllava.model.language_model.baichuan import BaichuanTokenizer
 
 def load_pretrained_model(
     model_path, model_base, model_name, load_8bit=False, load_4bit=False,
-    device_map="auto", device="cuda", use_flash_attn=False, **kwargs
+    device_map="auto", device="cuda", use_flash_attn=False, is_lora=False, **kwargs
 ):
     kwargs = {"device_map": device_map, **kwargs}
 
@@ -46,12 +46,13 @@ def load_pretrained_model(
     if use_flash_attn:
         kwargs['attn_implementation'] = 'flash_attention_2'
 
+    is_lora = is_lora or ('lora' in model_path.lower())
     if 'llava' in model_name.lower() or 'baichuan' in model_name.lower() or 'llama' in model_name.lower():
         # Load LLaVA model
-        if 'lora' in model_path.lower() and model_base is None:
+        if is_lora and model_base is None:
             warnings.warn('There is `lora` in model name but no `model_base` is provided. If you are loading a LoRA model, please provide the `model_base` argument. Detailed instruction: https://github.com/haotian-liu/LLaVA#launch-a-model-worker-lora-weights-unmerged.')
 
-        if 'lora' in model_path.lower() and model_base is not None:
+        if is_lora and model_base is not None:
 
             print('Loading LLaVA from base model...')
 
@@ -113,6 +114,8 @@ def load_pretrained_model(
             model = model.merge_and_unload()
             print('Model is loaded...')
         elif model_base is not None:
+            assert not is_lora
+
             # this may be mm projector only
             print('Loading LLaVA from base model...')
             if 'mpt' in model_name.lower():
@@ -130,6 +133,8 @@ def load_pretrained_model(
             mm_projector_weights = {k: v.to(torch.float16) for k, v in mm_projector_weights.items()}
             model.load_state_dict(mm_projector_weights, strict=False)
         else:
+            assert not is_lora
+
             if 'mpt' in model_name.lower():
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
                 model = LlavaMptForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
