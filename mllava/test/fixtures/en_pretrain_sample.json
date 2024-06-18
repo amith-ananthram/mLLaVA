@@ -1,0 +1,80 @@
+[
+    {
+        "id": "GCC_train_002575805",
+        "image": "GCC_train_002575805.jpg",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nCreate a compact narrative representing the image presented.   "
+            },
+            {
+                "from": "gpt",
+                "value": "larch trees in autumn colours along the trail"
+            }
+        ]
+    },
+    {
+        "id": "GCC_train_002575805",
+        "image": "GCC_train_002575805.jpg",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nCreate a compact narrative representing the image presented."
+            },
+            {
+                "from": "gpt",
+                "value": "larch trees in autumn colours along the trail"
+            },
+            {
+                "from": "human",
+                "value": "How tall are the trees?"
+            },
+            {
+                "from": "gpt",
+                "value": "Some are tall, some are short."
+            }
+        ]
+    },
+    {
+        "id": "GCC_train_001799021",
+        "image": "GCC_train_001799021.jpg",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "Relay a brief, clear account of the picture shown.\n<image>"
+            },
+            {
+                "from": "gpt",
+                "value": "bold color continues in the entrance hall ."
+            }
+        ]
+    },
+    {
+        "id": "GCC_train_002516446",
+        "image": "GCC_train_002516446.jpg",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>\nProvide a brief description of the given image."
+            },
+            {
+                "from": "gpt",
+                "value": "the most beautiful bedrooms in vogue ."
+            }
+        ]
+    },
+    {
+        "id": "GCC_train_002267868",
+        "image": "GCC_train_002267868.jpg",
+        "conversations": [
+            {
+                "from": "human",
+                "value": "Offer a succinct explanation of the picture presented.\n<image>"
+            },
+            {
+                "from": "gpt",
+                "value": "path in the mountains wallpaper - nature wallpapers - #"
+            }
+        ]
+    }
+]
