@@ -6,12 +6,14 @@ A fork of the [LLaVA codebase](https://github.com/haotian-liu/LLaVA/tree/main) w
 
 Models were trained using the v1.5 [pretraining](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/pretrain.sh) and [LORA fine-tuning](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/finetune_lora.sh) scripts.  We use the original LLaVA v1 fusion corpus (for Chinese, we use [the translation shared by LinkSoul](https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions)). 
 
+Each model directory is around 600MB unzipped as they only contain 1) the projector and 2) the LORA weights.  The codebase will download the rest of the model (Llama2-7B or Baichuan2-7B-Chat and CLIP-L).
+
 | Base LLM | Fusion Corpus Language(s) | Download Link |
 | ------- | ------- | ------ |
-| Llama2 | en | link |
+| Llama2-7B-Chat | en | link |
 | | zh | link |
 | | en/zh | link |
-| Baichuan2 | en | link |
+| Baichuan2-7B-Chat | en | link |
 | | zh | link |
 | | en/zh | link |
 
