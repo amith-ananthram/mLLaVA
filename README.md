@@ -4,7 +4,7 @@ A fork of the [LLaVA codebase](https://github.com/haotian-liu/LLaVA/tree/main) w
 
 ## Models
 
-Models were trained using the v1.5 [pretraining](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/pretrain.sh) and [LORA fine-tuning](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/finetune_lora.sh) scripts.  We use the fusion corpus used to train the original LLaVA v1 models (for Chinese, we use [the translation shared by LinkSoul](https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions)). 
+Models were trained using the v1.5 [pretraining](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/pretrain.sh) and [LORA fine-tuning](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/finetune_lora.sh) scripts.  We use the original LLaVA v1 fusion corpus (for Chinese, we use [the translation shared by LinkSoul](https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions)). 
 
 | Base LLM | Fusion Corpus Language(s) | Download Link |
 | ------- | ------- | ------ |
