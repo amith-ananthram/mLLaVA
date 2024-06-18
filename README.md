@@ -10,12 +10,12 @@ Each model directory is around 600MB unzipped as they only contain 1) the projec
 
 | Base LLM | Fusion Corpus Language(s) | Download Link |
 | ------- | ------- | ------ |
-| Llama2-7B-Chat | en | link |
-| | zh | link |
-| | en/zh | link |
-| Baichuan2-7B-Chat | en | link |
-| | zh | link |
-| | en/zh | link |
+| Llama2-7B-Chat | en | [link](https://drive.google.com/file/d/16H18ZwmHUNMmCNXinP0_kRdwNBYmJjg1/view?usp=sharing) |
+| | zh | [link](https://drive.google.com/file/d/1ScU9Xhstn5mtXN0et4X8LATxoOBxkTZi/view?usp=sharing) |
+| | en/zh | [link](https://drive.google.com/file/d/15fYREDYbzT8VJlRaXeb9A-bc6TRnGCbo/view?usp=sharing) |
+| Baichuan2-7B-Chat | en | [link](https://drive.google.com/file/d/1IH6TfObGf3wAXsgmSWtMvka80gc5J35C/view?usp=sharing) |
+| | zh | [link](https://drive.google.com/file/d/1iI2G7p0zTQUvaoVC9wqet-vwwq0sVD0Y/view?usp=sharing) |
+| | en/zh | [link](https://drive.google.com/file/d/1ym3JB66gsCJrH7fobG2P3kw-_f9RADY9/view?usp=sharing) |
 
 If you use any of these models, please cite:
 
