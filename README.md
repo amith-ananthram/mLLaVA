@@ -4,6 +4,8 @@ A fork of the [LLaVA codebase](https://github.com/haotian-liu/LLaVA/tree/main) w
 
 ## Models
 
+Models were trained using the v1.5 [pretraining](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/pretrain.sh) and [LORA fine-tuning](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/finetune_lora.sh) scripts.  We use the fusion corpus used to train the original LLaVA v1 models (for Chinese, we use [the translation shared by LinkSoul](https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions)). 
+
 | Base LLM | Fusion Corpus Language(s) | Download Link |
 | ------- | ------- | ------ |
 | Llama2 | en | link |
@@ -13,7 +15,9 @@ A fork of the [LLaVA codebase](https://github.com/haotian-liu/LLaVA/tree/main) w
 | | zh | link |
 | | en/zh | link |
 
-If you use these models, please cite:
+If you use any of these models, please cite:
 
 1) [Visual Instruction Tuning](https://proceedings.neurips.cc/paper_files/paper/2023/hash/6dcf277ea32ce3288914faf369fe6de0-Abstract-Conference.html), Liu et al., 2024
 2) [See It from My Perspective: Diagnosing the Western Cultural Bias of Large Vision-Language Models in Image Understanding](https://arxiv.org/abs/2406.11665), Ananthram et al., 2024 
+
+## Usage Instructions
