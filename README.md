@@ -20,4 +20,6 @@ If you use any of these models, please cite:
 1) [Visual Instruction Tuning](https://proceedings.neurips.cc/paper_files/paper/2023/hash/6dcf277ea32ce3288914faf369fe6de0-Abstract-Conference.html), Liu et al., 2024
 2) [See It from My Perspective: Diagnosing the Western Cultural Bias of Large Vision-Language Models in Image Understanding](https://arxiv.org/abs/2406.11665), Ananthram et al., 2024 
 
+And https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions.
+
 ## Usage Instructions
