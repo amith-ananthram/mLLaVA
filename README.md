@@ -26,58 +26,5 @@ And https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions.
 
 ## Example Usage
 
-    import torch
-    from PIL import Image
-
-    from mllava.mm_utils import get_model_name_from_path 
-    from mllava.model.builder import load_pretrained_model 
-    from mllava.conversation import conv_templates
-    from mllava.constants import IMAGE_TOKEN_INDEX
-    from mllava.mm_utils import tokenizer_image_token 
-    from mllava.mm_utils import process_images 
-
-    device = torch.device('cuda')
-
-    model_path = 'path/to/model/dir'
-    if 'baichuan' in model_path:
-      conv_mode = 'baichuan_2_chat'
-      model_base = 'baichuan-inc/Baichuan2-7B-Chat'
-    else:
-      assert 'llama' in model_path
-      conv_mode = 'llama_2_chat'
-      model_base = 'meta-llama/Llama-2-7b-chat-hf'
-
-    model_name = get_model_name_from_path(model_path)
-    tokenizer, model, image_processor, context_len = load_pretrained_model(
-      model_path, model_base, model_name, device=device
-    )
-
-    image_path = 'path/to/image/file'
-    query = '<image>\nPlease describe this image.'
-
-    conv = conv_templates[conv_mode].copy()
-    conv.append_message(conv.roles[0], template)
-    conv.append_message(conv.roles[1], None)
-    template = conv.get_prompt()
-    
-    input_ids = tokenizer_image_token(
-        prompt, tokenizer, IMAGE_TOKEN_INDEX, return_tensors="pt"
-    ).squeeze()
-    processed = {
-        'input_ids': input_ids,
-        'attention_mask': torch.ones(input_ids.shape[0])
-    }
-
-    with Image.open(image_path) as img:
-        images = process_images(
-            [img.convert('RGB')], image_processor, model.config
-        ).to(dtype=torch.float16).squeeze()
-        image_sizes = img.size
-
-    output = model.generate(
-      inputs=processed['input_ids'].unsqueeze(dim=0).to(device),
-      attention_mask=processed['attention_mask'].unsqueeze(dim=0).to(device),
-      images=images.unsqueeze(dim=0).to(device),
-      image_sizes=[image_sizes]
-    )
+For a minimal example of using one of our models for inference, please see [predict.py](https://github.com/amith-ananthram/mLLaVA/blob/main/predict.py).
     
