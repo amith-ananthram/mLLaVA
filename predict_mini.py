@@ -2,14 +2,13 @@ import sys
 import torch
 from PIL import Image
 
-from loader import load_pretrained_model
-from conversation import conv_templates
-from constants import IMAGE_TOKEN_INDEX
-from utils import get_model_name_from_path, tokenizer_image_token, process_images
+from minified.loader import load_pretrained_model
+from minified.conversation import conv_templates
+from minified.constants import IMAGE_TOKEN_INDEX
+from minified.utils import get_model_name_from_path, tokenizer_image_token, process_images
 
-from transformers import CLIPImageProcessor
-from llava_llama import LlavaConfig, LlavaLlamaForCausalLM
-from llava_baichuan import LlavaBaichuanConfig, LlavaBaichuanForCausalLM
+from minified.llava_llama import LlavaConfig, LlavaLlamaForCausalLM
+from minified.llava_baichuan import LlavaBaichuanConfig, LlavaBaichuanForCausalLM
 
 if __name__ == '__main__':
     model_path = sys.argv[1]
