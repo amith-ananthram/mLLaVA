@@ -2,6 +2,8 @@
 
 A fork of the [LLaVA codebase](https://github.com/haotian-liu/LLaVA/tree/main) with added support for using the Baichuan2 models as the base LLM.  This codebase is a dependency of the experiments in [See It From My Perspective](https://github.com/amith-ananthram/see-it-from-my-perspective/tree/main).
 
+Please note that we have also made these models available [on HuggingFace](https://huggingface.co/papers/2406.11665).
+
 ## Models
 
 Models were trained using the v1.5 [pretraining](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/pretrain.sh) and [LORA fine-tuning](https://github.com/amith-ananthram/mLLaVA/blob/main/scripts/v1_5/finetune_lora.sh) scripts.  We use the original LLaVA v1 fusion corpus (for Chinese, we use [the translation shared by LinkSoul](https://huggingface.co/datasets/LinkSoul/Chinese-LLaVA-Vision-Instructions)). 
