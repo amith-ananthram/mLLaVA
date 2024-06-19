@@ -2,12 +2,11 @@ import sys
 import torch
 from PIL import Image
 
-from utils import get_model_name_from_path
-from mllava.model.builder import load_pretrained_model
-from mllava.conversation import conv_templates
-from mllava.constants import IMAGE_TOKEN_INDEX
-from mllava.mm_utils import tokenizer_image_token
-from mllava.mm_utils import process_images
+from loader import load_pretrained_model
+from conversation import conv_templates
+from constants import IMAGE_TOKEN_INDEX
+from utils import get_model_name_from_path, tokenizer_image_token, process_images
+
 
 if __name__ == '__main__':
     model_path = sys.argv[1]
