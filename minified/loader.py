@@ -20,6 +20,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAn
 
 from llava_llama import LlavaLlamaForCausalLM
 from llava_baichuan import LlavaBaichuanForCausalLM
+from tokenization_baichuan import BaichuanTokenizer
 from constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 
 
@@ -57,7 +58,7 @@ def load_pretrained_model(
             print('Loading LLaVA from base model...')
 
             if 'baichuan' in model_base:
-                from mllava.model.language_model.llava_baichuan import LlavaBaichuanConfig
+                from llava_baichuan import LlavaBaichuanConfig
 
                 lora_cfg_pretrained = LlavaBaichuanConfig.from_pretrained(
                     model_path
@@ -70,7 +71,7 @@ def load_pretrained_model(
                     **kwargs
                 )
             else:
-                from mllava.model.language_model.llava_llama import LlavaConfig
+                from llava_llama import LlavaConfig
 
                 lora_cfg_pretrained = LlavaConfig.from_pretrained(
                     model_path

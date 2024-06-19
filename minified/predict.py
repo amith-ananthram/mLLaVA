@@ -12,6 +12,7 @@ if __name__ == '__main__':
     model_path = sys.argv[1]
     image_path = sys.argv[2]
     prompt = sys.argv[3]
+    hub_name = sys.argv[4]
 
     device = torch.device('cuda')
 
@@ -25,8 +26,12 @@ if __name__ == '__main__':
 
     model_name = get_model_name_from_path(model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
-        model_path, model_base, model_name, is_lora=True, device=device
+        model_path, model_base, model_name, is_lora=True
     )
+    print("Model name: %s" % model_name)
+
+    if hub_name.strip() != "":
+        model.push_to_hub(hub_name.strip())
 
     conv = conv_templates[conv_mode].copy()
     conv.append_message(conv.roles[0], '<image>\n' + prompt)
