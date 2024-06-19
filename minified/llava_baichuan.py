@@ -8,10 +8,10 @@ from transformers import AutoConfig, AutoModelForCausalLM
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.generation.utils import GenerateOutput
 
-from llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
+from .llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
 
-from configuration_baichuan import BaichuanConfig
-from modeling_baichuan import BaichuanModel, BaichuanForCausalLM
+from .configuration_baichuan import BaichuanConfig
+from .modeling_baichuan import BaichuanModel, BaichuanForCausalLM
 
 
 class LlavaBaichuanConfig(BaichuanConfig):

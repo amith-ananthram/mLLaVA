@@ -20,8 +20,8 @@
 # limitations under the License.
 
 
-from configuration_baichuan import BaichuanConfig
-from generation_utils_baichuan import build_chat_input, TextIterStreamer
+from .configuration_baichuan import BaichuanConfig
+from .generation_utils_baichuan import build_chat_input, TextIterStreamer
 
 import math
 from typing import List, Optional, Tuple, Union

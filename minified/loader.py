@@ -18,10 +18,10 @@ import warnings
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAndBytesConfig
 
-from llava_llama import LlavaLlamaForCausalLM
-from llava_baichuan import LlavaBaichuanForCausalLM
-from tokenization_baichuan import BaichuanTokenizer
-from constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from .llava_llama import LlavaLlamaForCausalLM
+from .llava_baichuan import LlavaBaichuanForCausalLM
+from .tokenization_baichuan import BaichuanTokenizer
+from .constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 
 
 def load_pretrained_model(

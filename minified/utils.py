@@ -17,7 +17,7 @@ import math
 import torch
 from PIL import Image
 
-from constants import IMAGE_TOKEN_INDEX
+from .constants import IMAGE_TOKEN_INDEX
 
 
 def get_model_name_from_path(model_path):

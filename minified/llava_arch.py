@@ -18,12 +18,12 @@ from abc import ABC, abstractmethod
 import torch
 import torch.nn as nn
 
-from multimodal_encoder import build_vision_tower
-from multimodal_projector import build_vision_projector
+from .multimodal_encoder import build_vision_tower
+from .multimodal_projector import build_vision_projector
 
-from constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from .constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 
-from utils import get_anyres_image_grid_shape
+from .utils import get_anyres_image_grid_shape
 
 
 class LlavaMetaModel:

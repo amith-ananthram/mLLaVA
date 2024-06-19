@@ -13,7 +13,7 @@
 #    limitations under the License.
 
 import os
-from clip_encoder import CLIPVisionTower
+from .clip_encoder import CLIPVisionTower
 
 
 def build_vision_tower(vision_tower_cfg, **kwargs):
