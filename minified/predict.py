@@ -7,6 +7,9 @@ from conversation import conv_templates
 from constants import IMAGE_TOKEN_INDEX
 from utils import get_model_name_from_path, tokenizer_image_token, process_images
 
+from transformers import CLIPImageProcessor
+from llava_llama import LlavaConfig, LlavaLlamaForCausalLM
+from llava_baichuan import LlavaBaichuanConfig, LlavaBaichuanForCausalLM
 
 if __name__ == '__main__':
     model_path = sys.argv[1]
@@ -19,10 +22,14 @@ if __name__ == '__main__':
     if 'baichuan' in model_path:
         conv_mode = 'baichuan_2_chat'
         model_base = 'baichuan-inc/Baichuan2-7B-Chat'
+        config_class = LlavaBaichuanConfig
+        model_class = LlavaBaichuanForCausalLM
     else:
         assert 'llama' in model_path
         conv_mode = 'llama_2_chat'
         model_base = 'meta-llama/Llama-2-7b-chat-hf'
+        config_class = LlavaConfig
+        model_class = LlavaLlamaForCausalLM
 
     model_name = get_model_name_from_path(model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(
@@ -31,6 +38,8 @@ if __name__ == '__main__':
     print("Model name: %s" % model_name)
 
     if hub_name.strip() != "":
+        config_class.register_for_auto_class()
+        model_class.register_for_auto_class("AutoModelForVisualQuestionAnswering")
         model.push_to_hub(hub_name.strip())
 
     conv = conv_templates[conv_mode].copy()
