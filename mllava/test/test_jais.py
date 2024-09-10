@@ -111,3 +111,30 @@ class TestJais(unittest.TestCase):
             ],
             tokenizer.convert_ids_to_tokens(labels)
         )
+
+        # include a special role token
+
+        processed = dataset[2]
+        input_ids = processed['input_ids'].squeeze().tolist()
+        input_ids[
+            input_ids.index(-200)
+        ] = tokenizer.convert_tokens_to_ids(DEFAULT_IMAGE_PATCH_TOKEN)
+
+        labels = [
+            label for label in processed['labels'].squeeze().tolist() if label != -100
+        ]
+
+        self.assertEqual(
+            [
+                '[', '|', 'Human', '|', ']', '<im_patch>', 'Ċ', 'Rel', 'ay', 'Ġa', 'Ġbrief', ',', 'Ġclear',
+                'Ġaccount', 'Ġof', 'Ġthe', 'Ġpicture', 'Ġshown', '.',
+                'Ġ[', '|', 'AI', '|', ']', 'Human', 'Ġin', 'Ġa', 'Ġhall'
+            ],
+            tokenizer.convert_ids_to_tokens(input_ids)
+        )
+        self.assertEqual(
+            [
+                'Human', 'Ġin', 'Ġa', 'Ġhall'
+            ],
+            tokenizer.convert_ids_to_tokens(labels)
+        )

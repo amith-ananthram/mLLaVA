@@ -631,6 +631,7 @@ def preprocess_baichuan_jais_chat(
 
     if conv.sep_style == conversation_lib.SeparatorStyle.BAICHUAN_2_CHAT:
         offset = 0
+        delimiter_token_id = None
         user_token_id = tokenizer.convert_tokens_to_ids(conv.roles[0])
         gpt_token_id = tokenizer.convert_tokens_to_ids(conv.roles[1])
     else:
@@ -638,17 +639,38 @@ def preprocess_baichuan_jais_chat(
         offset = 2
         assert conv.roles[0] == "[|Human|]", conv.roles[0]
         assert conv.roles[1] == " [|AI|]", conv.roles[1]
+        delimiter_token_id = tokenizer.convert_tokens_to_ids("|")
         user_token_id = tokenizer.convert_tokens_to_ids("Human")
         gpt_token_id = tokenizer.convert_tokens_to_ids("AI")
 
     for target in targets:
         user_idxs = [
             idx for idx, token_idx in enumerate(target.tolist())
-            if token_idx == user_token_id
+            if (
+                token_idx == user_token_id and (
+                    (
+                        delimiter_token_id is None
+                    ) or (
+                        0 < idx < len(target) - 1
+                        and target[idx - 1] == delimiter_token_id
+                        and target[idx + 1] == delimiter_token_id
+                    )
+                )
+            )
         ]
         gpt_idxs = [
             idx for idx, token_idx in enumerate(target.tolist())
-            if token_idx == gpt_token_id
+            if (
+               token_idx == gpt_token_id and (
+                    (
+                        delimiter_token_id is None
+                    ) or (
+                        0 < idx < len(target) - 1
+                        and target[idx - 1] == delimiter_token_id
+                        and target[idx + 1] == delimiter_token_id
+                    )
+                )
+            )
         ]
         assert len(user_idxs) == len(gpt_idxs)
         for user_idx, gpt_idx in zip(user_idxs, gpt_idxs):
