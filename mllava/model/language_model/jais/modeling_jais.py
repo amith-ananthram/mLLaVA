@@ -512,7 +512,8 @@ class JAISPreTrainedModel(PreTrainedModel):
     config_class = JAISConfig
     load_tf_weights = load_tf_weights_in_jais
     base_model_prefix = "transformer"
-    is_parallelizable = True
+    is_parallelizable = False #True
+    model_parallel = False
     supports_gradient_checkpointing = True
     _no_split_modules = ["JAISBlock"]
     _skip_keys_device_placement = "past_key_values"
@@ -777,6 +778,8 @@ class JAISModel(JAISPreTrainedModel):
             else None
         )
 
+        self.output_logits_scale = config.mup_output_alpha * config.mup_width_scale
+
         # Model parallel
         self.model_parallel = False
         self.device_map = None
@@ -830,6 +833,9 @@ class JAISModel(JAISPreTrainedModel):
             self.h[index] = self.h[index].to("cpu")
         self.ln_f = self.ln_f.to("cpu")
         torch.cuda.empty_cache()
+
+    def embed_tokens(self, inputs):
+        return self.wte(inputs)
 
     def get_input_embeddings(self):
         return self.wte
@@ -956,7 +962,7 @@ class JAISModel(JAISPreTrainedModel):
         hidden_states = self.drop(hidden_states)
 
         if self.relative_pe is not None:
-            length = input_ids.shape[1]
+            length = inputs_embeds.shape[1]
             cached_kv_length = 0
             cached_kv = past_key_values[0]
             if cached_kv is not None:

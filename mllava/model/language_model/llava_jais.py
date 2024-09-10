@@ -43,15 +43,19 @@ class LlavaJaisForCausalLM(JAISLMHeadModel, LlavaMetaForCausalLM):
 
     def __init__(self, config):
         super(JAISLMHeadModel, self).__init__(config)
-        self.model = LlavaJaisModel(config)
+        self.transformer = LlavaJaisModel(config)
 
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
+        self.output_logits_scale = config.mup_output_alpha * config.mup_width_scale
 
         # Initialize weights and apply final processing
         self.post_init()
 
+    def get_input_embeddings(self):
+        return self.transformer.get_input_embeddings()
+
     def get_model(self):
-        return self.model
+        return self.transformer
 
     def forward(
         self,

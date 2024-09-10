@@ -167,8 +167,8 @@ def get_mm_adapter_state_maybe_zero_3(named_params, keys_to_match):
     return to_return
 
 
-def find_all_linear_names(model):
-    cls = torch.nn.Linear
+def find_all_linear_names(model, use_conv):
+    cls = transformers.pytorch_utils.Conv1D if use_conv else torch.nn.Linear
     lora_module_names = set()
     multimodal_keywords = ['mm_projector', 'vision_tower', 'vision_resampler']
     for name, module in model.named_modules():
@@ -957,7 +957,7 @@ def train(attn_implementation=None):
         lora_config = LoraConfig(
             r=training_args.lora_r,
             lora_alpha=training_args.lora_alpha,
-            target_modules=find_all_linear_names(model),
+            target_modules=find_all_linear_names(model, 'jais' in model_args.version),
             lora_dropout=training_args.lora_dropout,
             bias=training_args.lora_bias,
             task_type="CAUSAL_LM",
