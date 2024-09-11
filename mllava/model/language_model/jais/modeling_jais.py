@@ -561,7 +561,7 @@ class JAISPreTrainedModel(PreTrainedModel):
         group 1: embedding layer gets non-scaled learning rate and weight decay.
         group 2: normalization layers and biases get non-scaled learning rate only.
 
-        The output can be passed to Adam-base optimizers 
+        The output can be passed to Adam-base optimizers
         e.g.
             param_groups = model.get_mup_param_groups(lr=1e-3, weight_decay=0.1)
             torch.optim.AdamW(param_groups, betas=(0.9, 0.95), eps=1e-8)
@@ -893,8 +893,12 @@ class JAISModel(JAISPreTrainedModel):
 
         device = input_ids.device if input_ids is not None else inputs_embeds.device
 
-        if token_type_ids is not None:
-            token_type_ids = token_type_ids.view(-1, input_shape[-1])
+        if token_type_ids is None:
+            token_type_ids = torch.zeros(
+                input_shape, dtype=torch.long, device=device
+            )
+        token_type_ids = token_type_ids.view(-1, input_shape[-1])
+
         if position_ids is not None:
             position_ids = position_ids.view(-1, input_shape[-1])
 
