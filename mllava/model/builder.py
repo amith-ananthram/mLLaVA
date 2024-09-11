@@ -47,7 +47,11 @@ def load_pretrained_model(
         kwargs['attn_implementation'] = 'flash_attention_2'
 
     is_lora = is_lora or ('lora' in model_path.lower())
-    if 'llava' in model_name.lower() or 'baichuan' in model_name.lower() or 'llama' in model_name.lower():
+    if ('llava' in model_name.lower()
+        or 'baichuan' in model_name.lower()
+        or 'llama' in model_name.lower()
+        or 'jais' in model_name.lower()
+    ):
         # Load LLaVA model
         if is_lora and model_base is None:
             warnings.warn('There is `lora` in model name but no `model_base` is provided. If you are loading a LoRA model, please provide the `model_base` argument. Detailed instruction: https://github.com/haotian-liu/LLaVA#launch-a-model-worker-lora-weights-unmerged.')
@@ -68,6 +72,17 @@ def load_pretrained_model(
                     low_cpu_mem_usage=True,
                     config=lora_cfg_pretrained,
                     **kwargs
+                )
+            elif 'jais' in model_base:
+                from mllava.model.language_model.llava_jais import LlavaJaisConfig
+
+                lora_cfg_pretrained = LlavaJaisConfig.from_pretrained(
+                    model_path
+                )
+                tokenizer = AutoTokenizer.from_pretrained(model_base)
+                model = LlavaJaisForCausalLM.from_pretrained(
+                    model_base, low_cpu_mem_usage=True,
+                    config=lora_cfg_pretrained, **kwargs
                 )
             else:
                 from mllava.model.language_model.llava_llama import LlavaConfig
@@ -152,6 +167,13 @@ def load_pretrained_model(
                     low_cpu_mem_usage=True,
                     **kwargs
                 )
+            elif 'jais' in model_name.lower():
+                tokenizer = AutoTokenizer.from_pretrained(model_path)
+                model = LlavaJaisForCausalLM.from_pretrained(
+                    model_path,
+                    low_cpu_mem_usage=True,
+                    **kwargs
+                )
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
                 model = LlavaLlamaForCausalLM.from_pretrained(
@@ -183,7 +205,12 @@ def load_pretrained_model(
 
     image_processor = None
 
-    if 'llava' in model_name.lower() or 'baichuan' in model_name.lower() or 'llama' in model_name.lower():
+    if (
+        'llava' in model_name.lower()
+        or 'baichuan' in model_name.lower()
+        or 'llama' in model_name.lower()
+        or 'jais' in model_name.lower()
+    ):
         mm_use_im_start_end = getattr(model.config, "mm_use_im_start_end", False)
         mm_use_im_patch_token = getattr(model.config, "mm_use_im_patch_token", True)
         if mm_use_im_patch_token:
