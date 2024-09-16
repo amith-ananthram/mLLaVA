@@ -167,8 +167,8 @@ def get_mm_adapter_state_maybe_zero_3(named_params, keys_to_match):
     return to_return
 
 
-def find_all_linear_names(model):
-    cls = torch.nn.Linear
+def find_all_linear_names(model, use_conv):
+    cls = transformers.pytorch_utils.Conv1D if use_conv else torch.nn.Linear
     lora_module_names = set()
     multimodal_keywords = ['mm_projector', 'vision_tower', 'vision_resampler']
     for name, module in model.named_modules():
@@ -586,7 +586,7 @@ def preprocess_mpt(
     )
 
 
-def preprocess_baichuan_chat(
+def preprocess_baichuan_jais_chat(
     sources,
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False
@@ -625,25 +625,56 @@ def preprocess_baichuan_chat(
 
     targets = input_ids.clone()
 
-    assert conv.sep_style == conversation_lib.SeparatorStyle.BAICHUAN_2_CHAT
+    assert conv.sep_style in {conversation_lib.SeparatorStyle.BAICHUAN_2_CHAT, conversation_lib.SeparatorStyle.JAIS_CHAT}
 
     # Mask targets
 
-    user_token_id = tokenizer.convert_tokens_to_ids(conv.roles[0])
-    gpt_token_id = tokenizer.convert_tokens_to_ids(conv.roles[1])
+    if conv.sep_style == conversation_lib.SeparatorStyle.BAICHUAN_2_CHAT:
+        offset = 0
+        delimiter_token_id = None
+        user_token_id = tokenizer.convert_tokens_to_ids(conv.roles[0])
+        gpt_token_id = tokenizer.convert_tokens_to_ids(conv.roles[1])
+    else:
+        assert conv.sep_style == conversation_lib.SeparatorStyle.JAIS_CHAT
+        offset = 2
+        assert conv.roles[0] == "[|Human|]", conv.roles[0]
+        assert conv.roles[1] == " [|AI|]", conv.roles[1]
+        delimiter_token_id = tokenizer.convert_tokens_to_ids("|")
+        user_token_id = tokenizer.convert_tokens_to_ids("Human")
+        gpt_token_id = tokenizer.convert_tokens_to_ids("AI")
 
     for target in targets:
         user_idxs = [
             idx for idx, token_idx in enumerate(target.tolist())
-            if token_idx == user_token_id
+            if (
+                token_idx == user_token_id and (
+                    (
+                        delimiter_token_id is None
+                    ) or (
+                        0 < idx < len(target) - 1
+                        and target[idx - 1] == delimiter_token_id
+                        and target[idx + 1] == delimiter_token_id
+                    )
+                )
+            )
         ]
         gpt_idxs = [
             idx for idx, token_idx in enumerate(target.tolist())
-            if token_idx == gpt_token_id
+            if (
+               token_idx == gpt_token_id and (
+                    (
+                        delimiter_token_id is None
+                    ) or (
+                        0 < idx < len(target) - 1
+                        and target[idx - 1] == delimiter_token_id
+                        and target[idx + 1] == delimiter_token_id
+                    )
+                )
+            )
         ]
         assert len(user_idxs) == len(gpt_idxs)
         for user_idx, gpt_idx in zip(user_idxs, gpt_idxs):
-            target[user_idx : gpt_idx + 1] = IGNORE_INDEX
+            target[user_idx - offset: gpt_idx + offset + 1] = IGNORE_INDEX
 
     return dict(
         input_ids=input_ids,
@@ -693,8 +724,9 @@ def preprocess(
         return preprocess_v1(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version == "mpt":
         return preprocess_mpt(sources, tokenizer, has_image=has_image)
-    if conversation_lib.default_conversation.version == "baichuan_2_chat":
-        return preprocess_baichuan_chat(sources, tokenizer, has_image=has_image)
+    if conversation_lib.default_conversation.version in {"baichuan_2_chat", "jais_chat"}:
+        return preprocess_baichuan_jais_chat(sources, tokenizer, has_image=has_image)
+
     # add end signal and concatenate together
     conversations = []
     for source in sources:
@@ -899,6 +931,14 @@ def train(attn_implementation=None):
                 torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
                 **bnb_model_from_pretrained_args
             )
+        elif 'jais' in model_args.model_name_or_path:
+            assert model_args.version == 'jais_chat'
+            model = LlavaJaisForCausalLM.from_pretrained(
+                model_args.model_name_or_path,
+                cache_dir=training_args.cache_dir,
+                torch_dtype=(torch.bfloat16 if training_args.bf16 else None),
+                **bnb_model_from_pretrained_args
+            )
         else:
             assert model_args.version in {'llama_2_chat'}
             model = LlavaLlamaForCausalLM.from_pretrained(
@@ -939,7 +979,7 @@ def train(attn_implementation=None):
         lora_config = LoraConfig(
             r=training_args.lora_r,
             lora_alpha=training_args.lora_alpha,
-            target_modules=find_all_linear_names(model),
+            target_modules=find_all_linear_names(model, 'jais' in model_args.version),
             lora_dropout=training_args.lora_dropout,
             bias=training_args.lora_bias,
             task_type="CAUSAL_LM",
@@ -965,7 +1005,15 @@ def train(attn_implementation=None):
             cache_dir=training_args.cache_dir,
             model_max_length=training_args.model_max_length
         )
+    elif 'jais' in model_args.model_name_or_path.lower():
+        tokenizer = transformers.AutoTokenizer.from_pretrained(
+            model_args.model_name_or_path,
+            cache_dir=training_args.cache_dir,
+            model_max_length=training_args.model_max_length,
+            padding_side="left"
+        )
     else:
+        # fine for LLAMA as they are right-padded
         tokenizer = transformers.AutoTokenizer.from_pretrained(
             model_args.model_name_or_path,
             cache_dir=training_args.cache_dir,
@@ -989,6 +1037,7 @@ def train(attn_implementation=None):
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             assert 'baichuan' not in model_args.model_name_or_path.lower()
+            assert 'jais' not in model_args.model_name_or_path.lower()
             assert 'llama-2-7b-chat' not in model_args.model_name_or_path.lower()
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
 

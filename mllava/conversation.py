@@ -14,6 +14,7 @@ class SeparatorStyle(Enum):
     PLAIN = auto()
     LLAMA_2 = auto()
     BAICHUAN_2_CHAT = auto()
+    JAIS_CHAT = auto()
 
 
 @dataclasses.dataclass
@@ -71,7 +72,7 @@ class Conversation:
                     ret += role + message + self.sep
                 else:
                     ret += role
-        elif self.sep_style == SeparatorStyle.BAICHUAN_2_CHAT:
+        elif self.sep_style in {SeparatorStyle.BAICHUAN_2_CHAT, SeparatorStyle.JAIS_CHAT}:
             ret = []
             for role, message in messages:
                 if message:
@@ -314,6 +315,17 @@ conv_baichuan_2_chat = Conversation(
     sep2="</s>"
 )
 
+conv_jais_chat = Conversation(
+    system="",
+    roles=("[|Human|]", " [|AI|]"),
+    version="jais_chat",
+    messages=(),
+    offset=0,
+    sep_style=SeparatorStyle.JAIS_CHAT,
+    sep="",
+    sep2=""
+)
+
 conv_llama_2_chat = Conversation(
     system="",
     roles=("USER", "ASSISTANT"),
@@ -417,6 +429,7 @@ conv_templates = {
     # "llama_2": conv_llama_2,
     "baichuan_2_chat": conv_baichuan_2_chat,
     "llama_2_chat": conv_llama_2_chat,
+    "jais_chat": conv_jais_chat,
     # "mistral_instruct": conv_mistral_instruct,
     # "chatml_direct": conv_chatml_direct,
     # "mistral_direct": conv_chatml_direct,

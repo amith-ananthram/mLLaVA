@@ -87,6 +87,8 @@ def eval_model(args):
         conv_mode = "mpt"
     elif "baichuan" in model_name.lower():
         conv_mode = "baichuan_2_chat"
+    elif "jais" in model_name.lower():
+        conv_mode = "jais_chat"
     elif "llama" in model_name.lower():
         conv_mode = "llama_2_chat"
     else:
